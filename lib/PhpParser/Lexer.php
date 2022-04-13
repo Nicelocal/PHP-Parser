@@ -420,10 +420,9 @@ class Lexer
         // return with (); removed
         return substr($textAfter, strlen($matches[0]));
     }
-
+    private static $compatTokensDefined = false;
     private function defineCompatibilityTokens() {
-        static $compatTokensDefined = false;
-        if ($compatTokensDefined) {
+        if (self::$compatTokensDefined) {
             return;
         }
 
@@ -478,7 +477,7 @@ class Lexer
             }
         }
 
-        $compatTokensDefined = true;
+        self::$compatTokensDefined = true;
     }
 
     /**

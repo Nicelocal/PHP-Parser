@@ -2331,7 +2331,7 @@ class Php7 extends \PhpParser\ParserAbstract
             443 => function ($stackPos) {
                  $attrs = $this->startAttributeStack[$stackPos-(2-1)] + $this->endAttributes;
             $attrs['kind'] = $this->getFloatCastKind($this->semStack[$stackPos-(2-1)]);
-            $this->semValue = new Expr\Cast\Double($this->semStack[$stackPos-(2-2)], $attrs);
+            $this->semValue = new Expr\Cast\Double_($this->semStack[$stackPos-(2-2)], $attrs);
             },
             444 => function ($stackPos) {
                  $this->semValue = new Expr\Cast\String_($this->semStack[$stackPos-(2-2)], $this->startAttributeStack[$stackPos-(2-1)] + $this->endAttributes);

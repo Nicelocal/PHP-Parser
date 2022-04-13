@@ -471,16 +471,16 @@ class Standard extends PrettyPrinterAbstract
         return $this->pPrefixOp(Cast\Int_::class, '(int) ', $node->expr);
     }
 
-    protected function pExpr_Cast_Double(Cast\Double $node) {
-        $kind = $node->getAttribute('kind', Cast\Double::KIND_DOUBLE);
-        if ($kind === Cast\Double::KIND_DOUBLE) {
+    protected function pExpr_Cast_Double(Cast\Double_ $node) {
+        $kind = $node->getAttribute('kind', Cast\Double_::KIND_DOUBLE);
+        if ($kind === Cast\Double_::KIND_DOUBLE) {
             $cast = '(double)';
-        } elseif ($kind === Cast\Double::KIND_FLOAT) {
+        } elseif ($kind === Cast\Double_::KIND_FLOAT) {
             $cast = '(float)';
-        } elseif ($kind === Cast\Double::KIND_REAL) {
+        } elseif ($kind === Cast\Double_::KIND_REAL) {
             $cast = '(real)';
         }
-        return $this->pPrefixOp(Cast\Double::class, $cast . ' ', $node->expr);
+        return $this->pPrefixOp(Cast\Double_::class, $cast . ' ', $node->expr);
     }
 
     protected function pExpr_Cast_String(Cast\String_ $node) {
@@ -542,15 +542,14 @@ class Standard extends PrettyPrinterAbstract
         return 'eval(' . $this->p($node->expr) . ')';
     }
 
+    const __MAP = [
+        Expr\Include_::TYPE_INCLUDE      => 'include',
+        Expr\Include_::TYPE_INCLUDE_ONCE => 'include_once',
+        Expr\Include_::TYPE_REQUIRE      => 'require',
+        Expr\Include_::TYPE_REQUIRE_ONCE => 'require_once',
+    ];
     protected function pExpr_Include(Expr\Include_ $node) {
-        static $map = [
-            Expr\Include_::TYPE_INCLUDE      => 'include',
-            Expr\Include_::TYPE_INCLUDE_ONCE => 'include_once',
-            Expr\Include_::TYPE_REQUIRE      => 'require',
-            Expr\Include_::TYPE_REQUIRE_ONCE => 'require_once',
-        ];
-
-        return $map[$node->type] . ' ' . $this->p($node->expr);
+        return self::__MAP[$node->type] . ' ' . $this->p($node->expr);
     }
 
     protected function pExpr_List(Expr\List_ $node) {

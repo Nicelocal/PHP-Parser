@@ -7,7 +7,7 @@ namespace PhpParser;
  * turn is based on work by Masato Bito.
  */
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Cast\Double;
+use PhpParser\Node\Expr\Cast\Double_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\Encapsed;
@@ -497,7 +497,7 @@ abstract class ParserAbstract implements Parser
         } else {
             // For semicolon namespaces we have to move the statements after a namespace declaration into ->stmts
             $resultStmts = [];
-            $targetStmts =& $resultStmts;
+            $targetStmts = false;
             $lastNs = null;
             foreach ($stmts as $stmt) {
                 if ($stmt instanceof Node\Stmt\Namespace_) {
@@ -506,19 +506,23 @@ abstract class ParserAbstract implements Parser
                     }
                     if ($stmt->stmts === null) {
                         $stmt->stmts = [];
-                        $targetStmts =& $stmt->stmts;
+                        $targetStmts = $stmt;
                         $resultStmts[] = $stmt;
                     } else {
                         // This handles the invalid case of mixed style namespaces
                         $resultStmts[] = $stmt;
-                        $targetStmts =& $resultStmts;
+                        $targetStmts = false;
                     }
                     $lastNs = $stmt;
                 } elseif ($stmt instanceof Node\Stmt\HaltCompiler) {
                     // __halt_compiler() is not moved into the namespace
                     $resultStmts[] = $stmt;
                 } else {
-                    $targetStmts[] = $stmt;
+                    if ($targetStmts) {
+                        $targetStmts->stmts[] = $stmt;
+                    } else {
+                        $resultStmts[] = $stmt;
+                    }
                 }
             }
             if ($lastNs !== null) {
@@ -693,14 +697,14 @@ abstract class ParserAbstract implements Parser
     {
         $cast = strtolower($cast);
         if (strpos($cast, 'float') !== false) {
-            return Double::KIND_FLOAT;
+            return Double_::KIND_FLOAT;
         }
 
         if (strpos($cast, 'real') !== false) {
-            return Double::KIND_REAL;
+            return Double_::KIND_REAL;
         }
 
-        return Double::KIND_DOUBLE;
+        return Double_::KIND_DOUBLE;
     }
 
     protected function parseLNumber($str, $attributes, $allowInvalidOctal = false) {

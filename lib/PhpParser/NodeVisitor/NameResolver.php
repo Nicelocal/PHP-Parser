@@ -71,8 +71,9 @@ class NameResolver extends NodeVisitorAbstract
                 $node->extends = $this->resolveClassName($node->extends);
             }
 
-            foreach ($node->implements as &$interface) {
+            foreach ($node->implements as $k => $interface) {
                 $interface = $this->resolveClassName($interface);
+                $node->implements[$k] = $interface;
             }
 
             $this->resolveAttrGroups($node);
@@ -80,15 +81,17 @@ class NameResolver extends NodeVisitorAbstract
                 $this->addNamespacedName($node);
             }
         } elseif ($node instanceof Stmt\Interface_) {
-            foreach ($node->extends as &$interface) {
+            foreach ($node->extends as $k => $interface) {
                 $interface = $this->resolveClassName($interface);
+                $node->extends[$k] = $interface;
             }
 
             $this->resolveAttrGroups($node);
             $this->addNamespacedName($node);
          } elseif ($node instanceof Stmt\Enum_) {
-            foreach ($node->implements as &$interface) {
+            foreach ($node->implements as $k => $interface) {
                 $interface = $this->resolveClassName($interface);
+                $node->implements[$k] = $interface;
             }
 
             $this->resolveAttrGroups($node);
@@ -131,8 +134,9 @@ class NameResolver extends NodeVisitorAbstract
                 $node->class = $this->resolveClassName($node->class);
             }
         } elseif ($node instanceof Stmt\Catch_) {
-            foreach ($node->types as &$type) {
+            foreach ($node->types as $k => $type) {
                 $type = $this->resolveClassName($type);
+                $node->types[$k] = $type;
             }
         } elseif ($node instanceof Expr\FuncCall) {
             if ($node->name instanceof Name) {
@@ -141,8 +145,9 @@ class NameResolver extends NodeVisitorAbstract
         } elseif ($node instanceof Expr\ConstFetch) {
             $node->name = $this->resolveName($node->name, Stmt\Use_::TYPE_CONSTANT);
         } elseif ($node instanceof Stmt\TraitUse) {
-            foreach ($node->traits as &$trait) {
+            foreach ($node->traits as $k => $trait) {
                 $trait = $this->resolveClassName($trait);
+                $node->traits[$k] = $trait;
             }
 
             foreach ($node->adaptations as $adaptation) {
@@ -151,8 +156,9 @@ class NameResolver extends NodeVisitorAbstract
                 }
 
                 if ($adaptation instanceof Stmt\TraitUseAdaptation\Precedence) {
-                    foreach ($adaptation->insteadof as &$insteadof) {
+                    foreach ($adaptation->insteadof as $k => $insteadof) {
                         $insteadof = $this->resolveClassName($insteadof);
+                        $adaptation->insteadof[$k] = $insteadof;
                     }
                 }
             }
@@ -190,8 +196,9 @@ class NameResolver extends NodeVisitorAbstract
             return $node;
         }
         if ($node instanceof Node\UnionType || $node instanceof Node\IntersectionType) {
-            foreach ($node->types as &$type) {
+            foreach ($node->types as $k => $type) {
                 $type = $this->resolveType($type);
+                $node->types[$k] = $type;
             }
             return $node;
         }

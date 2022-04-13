@@ -34,7 +34,7 @@ abstract class PrettyPrinterAbstract
         Expr\UnaryPlus::class          => [ 10,  1],
         Expr\UnaryMinus::class         => [ 10,  1],
         Cast\Int_::class               => [ 10,  1],
-        Cast\Double::class             => [ 10,  1],
+        Cast\Double_::class             => [ 10,  1],
         Cast\String_::class            => [ 10,  1],
         Cast\Array_::class             => [ 10,  1],
         Cast\Object_::class            => [ 10,  1],
@@ -1015,8 +1015,9 @@ abstract class PrettyPrinterAbstract
             return;
         }
 
-        if (!$this->labelCharMap[$append[0]]
-                || !$this->labelCharMap[$str[\strlen($str) - 1]]) {
+        $temp = (string)$append[0];
+        $temp2 = (string)$str[\strlen($str) - 1];
+        if (!$this->labelCharMap[$temp] || !$this->labelCharMap[$temp2]) {
             $str .= $append;
         } else {
             $str .= " " . $append;
@@ -1236,7 +1237,7 @@ abstract class PrettyPrinterAbstract
 
         $prefixOps = [
             Expr\BitwiseNot::class, Expr\BooleanNot::class, Expr\UnaryPlus::class, Expr\UnaryMinus::class,
-            Cast\Int_::class, Cast\Double::class, Cast\String_::class, Cast\Array_::class,
+            Cast\Int_::class, Cast\Double_::class, Cast\String_::class, Cast\Array_::class,
             Cast\Object_::class, Cast\Bool_::class, Cast\Unset_::class, Expr\ErrorSuppress::class,
             Expr\YieldFrom::class, Expr\Print_::class, Expr\Include_::class,
         ];

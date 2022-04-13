@@ -108,23 +108,21 @@ class NodeTraverser implements NodeTraverserInterface
      */
     protected function traverseNode(Node $node) : Node {
         foreach ($node->getSubNodeNames() as $name) {
-            $subNode =& $node->$name;
-
-            if (\is_array($subNode)) {
-                $subNode = $this->traverseArray($subNode);
+            if (\is_array($node->$name)) {
+                $node->$name = $this->traverseArray($node->$name);
                 if ($this->stopTraversal) {
                     break;
                 }
-            } elseif ($subNode instanceof Node) {
+            } elseif ($node->$name instanceof Node) {
                 $traverseChildren = true;
                 $breakVisitorIndex = null;
 
                 foreach ($this->visitors as $visitorIndex => $visitor) {
-                    $return = $visitor->enterNode($subNode);
+                    $return = $visitor->enterNode($node->$name);
                     if (null !== $return) {
                         if ($return instanceof Node) {
-                            $this->ensureReplacementReasonable($subNode, $return);
-                            $subNode = $return;
+                            $this->ensureReplacementReasonable($node->$name, $return);
+                            $node->$name = $return;
                         } elseif (self::DONT_TRAVERSE_CHILDREN === $return) {
                             $traverseChildren = false;
                         } elseif (self::DONT_TRAVERSE_CURRENT_AND_CHILDREN === $return) {
@@ -143,19 +141,19 @@ class NodeTraverser implements NodeTraverserInterface
                 }
 
                 if ($traverseChildren) {
-                    $subNode = $this->traverseNode($subNode);
+                    $node->$name = $this->traverseNode($node->$name);
                     if ($this->stopTraversal) {
                         break;
                     }
                 }
 
                 foreach ($this->visitors as $visitorIndex => $visitor) {
-                    $return = $visitor->leaveNode($subNode);
+                    $return = $visitor->leaveNode($node->$name);
 
                     if (null !== $return) {
                         if ($return instanceof Node) {
-                            $this->ensureReplacementReasonable($subNode, $return);
-                            $subNode = $return;
+                            $this->ensureReplacementReasonable($node->$name, $return);
+                            $node->$name = $return;
                         } elseif (self::STOP_TRAVERSAL === $return) {
                             $this->stopTraversal = true;
                             break 2;
@@ -191,7 +189,7 @@ class NodeTraverser implements NodeTraverserInterface
     protected function traverseArray(array $nodes) : array {
         $doNodes = [];
 
-        foreach ($nodes as $i => &$node) {
+        foreach ($nodes as $i => $node) {
             if ($node instanceof Node) {
                 $traverseChildren = true;
                 $breakVisitorIndex = null;
@@ -201,7 +199,7 @@ class NodeTraverser implements NodeTraverserInterface
                     if (null !== $return) {
                         if ($return instanceof Node) {
                             $this->ensureReplacementReasonable($node, $return);
-                            $node = $return;
+                            $nodes[$i] = $node = $return;
                         } elseif (self::DONT_TRAVERSE_CHILDREN === $return) {
                             $traverseChildren = false;
                         } elseif (self::DONT_TRAVERSE_CURRENT_AND_CHILDREN === $return) {
@@ -220,7 +218,7 @@ class NodeTraverser implements NodeTraverserInterface
                 }
 
                 if ($traverseChildren) {
-                    $node = $this->traverseNode($node);
+                    $nodes[$i] = $node = $this->traverseNode($node);
                     if ($this->stopTraversal) {
                         break;
                     }
@@ -232,7 +230,7 @@ class NodeTraverser implements NodeTraverserInterface
                     if (null !== $return) {
                         if ($return instanceof Node) {
                             $this->ensureReplacementReasonable($node, $return);
-                            $node = $return;
+                            $nodes[$i] = $node = $return;
                         } elseif (\is_array($return)) {
                             $doNodes[] = [$i, $return];
                             break;
