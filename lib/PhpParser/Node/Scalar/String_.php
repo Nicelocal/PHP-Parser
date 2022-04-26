@@ -16,7 +16,7 @@ class String_ extends Scalar
     /** @var string String value */
     public $value;
 
-    protected static $replacements = [
+    public static $replacements = [
         '\\' => '\\',
         '$'  =>  '$',
         'n'  => "\n",
@@ -118,7 +118,7 @@ class String_ extends Scalar
      *
      * @return string UTF-8 representation of code point
      */
-    private static function codePointToUtf8(int $num) : string {
+    public static function codePointToUtf8(int $num) : string {
         if ($num <= 0x7F) {
             return chr($num);
         }

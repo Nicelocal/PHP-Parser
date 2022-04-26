@@ -1016,7 +1016,7 @@ abstract class PrettyPrinterAbstract
         }
 
         $temp = (string)$append[0];
-        $temp2 = (string)$str[\strlen($str) - 1];
+        $temp2 = (string)substr($str, \strlen($str) - 1, 1);
         if (!$this->labelCharMap[$temp] || !$this->labelCharMap[$temp2]) {
             $str .= $append;
         } else {
