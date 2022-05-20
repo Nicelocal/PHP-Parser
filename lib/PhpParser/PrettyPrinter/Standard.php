@@ -7,6 +7,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\Cast;
+use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Scalar\MagicConst;
@@ -405,7 +406,7 @@ class Standard extends PrettyPrinterAbstract
     }
 
     protected function pExpr_Instanceof(Expr\Instanceof_ $node) {
-        list($precedence, $associativity) = $this->precedenceMap[Expr\Instanceof_::class];
+        list($precedence, $associativity) = $this->precedenceMap[Instanceof_::class];
         return $this->pPrec($node->expr, $precedence, $associativity, -1)
              . ' instanceof '
              . $this->pNewVariable($node->class);
