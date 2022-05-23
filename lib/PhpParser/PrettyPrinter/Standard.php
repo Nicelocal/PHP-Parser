@@ -406,7 +406,7 @@ class Standard extends PrettyPrinterAbstract
     }
 
     protected function pExpr_Instanceof(Expr\Instanceof_ $node) {
-        list($precedence, $associativity) = $this->precedenceMap[Instanceof_::class];
+        list($precedence, $associativity) = $this->precedenceMap[\PhpParser\Node\Expr\Instanceof_::class];
         return $this->pPrec($node->expr, $precedence, $associativity, -1)
              . ' instanceof '
              . $this->pNewVariable($node->class);
